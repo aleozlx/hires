@@ -69,8 +69,8 @@ create table superpixel_inference (
     ------------------
     -- Superpixel Generation
     ------------------
-    frame_id INT REFERENCES frame(id),
-    size_class INT,
+    frame_id INT REFERENCES frame(id) NOT NULL,
+    size_class INT NOT NULL,
     
     ------------------
     -- Moments
