@@ -67,6 +67,7 @@ CREATE TABLE class_label (
 create table superpixel_inference (
     id SERIAL PRIMARY KEY,
     frame_id INT REFERENCES frame(id),
+    size_class INT,
     area FLOAT,
     centroid_abs_x INT,
     centroid_abs_y INT,
@@ -80,6 +81,7 @@ create table superpixel_inference (
     -- eigenvalue_1 FLOAT,
     -- eigenvalue_2 FLOAT,
     -- eccentricity FLOAT,
+    -- boundary GEOMETRY,
     -- convexivity FLOAT,
     dcnn_name VARCHAR[16],
     dcnn_feature FLOAT[],
