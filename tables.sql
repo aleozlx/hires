@@ -66,8 +66,15 @@ CREATE TABLE class_label (
 
 create table superpixel_inference (
     id SERIAL PRIMARY KEY,
+    ------------------
+    -- Superpixel Generation
+    ------------------
     frame_id INT REFERENCES frame(id),
     size_class INT,
+    
+    ------------------
+    -- Moments
+    ------------------
     area FLOAT,
     centroid_abs_x INT,
     centroid_abs_y INT,
@@ -81,11 +88,24 @@ create table superpixel_inference (
     -- eigenvalue_1 FLOAT,
     -- eigenvalue_2 FLOAT,
     -- eccentricity FLOAT,
+
+    ------------------
+    -- Polygon
+    ------------------
     -- boundary GEOMETRY,
     -- convexivity FLOAT,
+    
+    ------------------
+    -- DCNN Feature
+    ------------------
     dcnn_name VARCHAR[16],
     dcnn_feature FLOAT[],
-    class_label INT
+    
+    ------------------
+    -- Training Data
+    ------------------
+    class_label INT, -- the label of the smallest bounding box containing the centroid 
+    class_label_multiplicity INT -- the number of bounding boxes that the centroid hits
 );
 
 -- create temporary table tmp_xview_labels (values text) on commit drop;
