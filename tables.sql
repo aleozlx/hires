@@ -58,6 +58,21 @@ INSERT INTO bbox (frame_id, xview_type_id, xview_cat_id, xview_bounds_imcoords, 
     ) xv
     INNER JOIN frame ON xv.fname = frame.image;
 
+CREATE TABLE class_label (
+    id INT PRIMARY KEY, -- label id
+    label_name TEXT NOT NULL, -- name of the label
+    label_name_long TEXT -- long name of the label
+);
+
+create table superpixel_inference (
+    id SERIAL PRIMARY KEY,
+    frame_id INT REFERENCES frame(id),
+    centroid_abs_x INT,
+    centroid_abs_y INT,
+    dcnn_name VARCHAR[16],
+    dcnn_feature FLOAT[],
+    class_label INT
+);
 
 -- create temporary table tmp_xview_labels (values text) on commit drop;
 -- copy tmp_xview_labels from '/tank/datasets/research/xView/xView_train.geojson';
