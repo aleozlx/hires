@@ -17,6 +17,7 @@ CREATE TABLE frame (
 );
 
 CREATE INDEX idx_frame ON frame USING GIN (partitions);
+CREATE INDEX idx_image ON frame (image);
 
 CREATE TABLE bbox (
     id SERIAL PRIMARY KEY,
@@ -216,3 +217,59 @@ create table superpixel_inference (
 --     select json_array_elements(feature_collection->'features') as feat
 --     from xview_sample
 -- ) as f;
+
+
+
+
+
+
+
+
+
+
+
+CREATE TABLE bbox2 (
+    id SERIAL PRIMARY KEY,
+    frame_id INT REFERENCES frame(id),
+    xview_type_id INT,
+    xview_cat_id VARCHAR(20),
+    xview_bounds_imcoords geometry,
+    xview_coordinates GEOMETRY
+);
+
+INSERT INTO bbox2 (frame_id, xview_type_id, xview_cat_id, xview_bounds_imcoords, xview_coordinates)
+SELECT
+    frame.id,
+    xview_type_id,
+    xview_cat_id,
+    xview_bounds_imcoords,
+    xview_coordinates
+FROM (
+    SELECT
+        ('train_images/' || xe.fname) AS fname,
+        xe.xview_type_id AS xview_type_id,
+        xe.xview_cat_id AS xview_cat_id,
+        st_makebox2d(st_point(xe.xvbox[1], xe.xvbox[2]), st_point(xe.xvbox[3], xe.xvbox[4]))::geometry AS xview_bounds_imcoords,
+        ST_GeomFromGeoJSON(xe.xview_coordinates) AS xview_coordinates
+    FROM (
+         SELECT
+            feat->'properties'->>'image_id' AS fname,
+            (feat->'properties'->>'type_id')::int AS xview_type_id,
+            feat->'properties'->>'cat_id' AS xview_cat_id,
+            string_to_array(feat->'properties'->>'bounds_imcoords', ',')::float8[] AS xvbox,
+            feat->>'geometry' AS xview_coordinates
+        FROM (
+            SELECT json_array_elements(feature_collection->'features') AS feat
+            FROM tmp_xview_feature_collection
+        ) AS json_xview_feature_collection
+    ) xe
+) xv
+INNER JOIN frame ON xv.fname = frame.image;
+
+create index idx_bbox2_test on bbox2 using gist (xview_bounds_imcoords);
+
+-- select * from bbox2 where frame_id=849 limit 5;
+
+-- select count(*) from bbox2;
+
+select xview_type_id, class_label.label_name, xview_bounds_imcoords::box2d from bbox2 join class_label on bbox2.xview_type_id = class_label.id where frame_id=849 and st_point(2450, 20) && xview_bounds_imcoords;
