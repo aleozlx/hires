@@ -82,40 +82,40 @@ create table superpixel_inference (
     ------------------
     frame_id INT REFERENCES frame(id) NOT NULL,
     size_class INT NOT NULL,
-    
+
     ------------------
     -- Moments
     ------------------
-    area FLOAT,
+    area REAL,
     centroid_abs_x INT,
     centroid_abs_y INT,
-    -- cov_11 FLOAT,
-    -- cov_12 FLOAT,
-    -- cov_22 FLOAT,
-    -- eigenvector_1_x FLOAT,
-    -- eigenvector_1_y FLOAT,
-    -- eigenvector_2_x FLOAT,
-    -- eigenvector_2_y FLOAT,
-    -- eigenvalue_1 FLOAT,
-    -- eigenvalue_2 FLOAT,
-    -- eccentricity FLOAT,
+    -- cov_11 REAL,
+    -- cov_12 REAL,
+    -- cov_22 REAL,
+    -- eigenvector_1_x REAL,
+    -- eigenvector_1_y REAL,
+    -- eigenvector_2_x REAL,
+    -- eigenvector_2_y REAL,
+    -- eigenvalue_1 REAL,
+    -- eigenvalue_2 REAL,
+    -- eccentricity REAL,
 
     ------------------
     -- Polygon
     ------------------
     -- boundary GEOMETRY,
-    -- convexivity FLOAT,
-    
+    -- convexivity REAL,
+
     ------------------
     -- DCNN Feature
     ------------------
-    dcnn_name VARCHAR[16],
-    dcnn_feature FLOAT[],
-    
+    dcnn_name VARCHAR(16),
+    dcnn_feature REAL[],
+
     ------------------
     -- Training Data
     ------------------
-    class_label INT, -- the label of the smallest bounding box containing the centroid 
+    class_label INT, -- the label of the smallest bounding box containing the centroid
     class_label_multiplicity INT -- the number of bounding boxes that the centroid hits
 );
 
